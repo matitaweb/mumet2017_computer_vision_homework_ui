@@ -1,0 +1,76 @@
+{% extends "bootstrap/base.html" %}
+
+{% block title %}MUMET 2017 HOMEWORK {% endblock %}
+
+{% block head %}
+{{ super() }}
+<link rel="shortcut icon" href="{{ url_for('static', filename='favicon.ico') }}" type="image/x-icon">
+<link rel="icon" href="{{ url_for('static', filename='favicon.ico') }}" type="image/x-icon">
+
+<!-- Generic page styles -->
+<link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+
+<!-- blueimp Gallery styles -->
+<link rel="stylesheet" href="//blueimp.github.io/Gallery/css/blueimp-gallery.min.css">
+
+<!-- CSS to style the file input field as button and adjust the Bootstrap progress bars -->
+<link rel="stylesheet" href="{{ url_for('static', filename='css/jquery.fileupload.css') }}">
+<link rel="stylesheet" href="{{ url_for('static', filename='css/jquery.fileupload-ui.css') }}">
+{% endblock %}
+
+{% block navbar %}
+<div class="navbar navbar-inverse" role="navigation">
+    <div class="container">
+        <div class="navbar-header">
+            <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="/">MuMeT</a>
+        </div>
+        <div class="navbar-collapse collapse">
+            <ul class="nav navbar-nav">
+                <li><a href="/filemanager">Files</a></li>
+                <li><a href="/histogram">Histogram</a></li>
+                <li><a href="/luminance">Luminance</a></li>
+                <li><a href="/merge">Merge</a></li>
+                <li><a href="/boundingbox">Boundingbox</a></li>
+                <li><a href="/isometrics">Isometrics</a></li>
+                <li><a href="/mosaik">Mosaik</a></li>
+                <li><a href="/noisefilter">Noise filter</a></li>
+                <li class="dropdown">
+                    <a href="#" class="dropdown-toggle" data-toggle="dropdown">Dropdown<strong class="caret"></strong></a>
+                    <ul class="dropdown-menu">
+                        <li>
+                        	<a href="#">Action</a>
+                        </li>
+                        <li>
+                        	<a href="#">Another action</a>
+                        </li>
+                        <li>
+                        	<a href="#">Something else here</a>
+                        </li>
+                        <li>
+                        	<a href="#">Separated link</a>
+                        </li>
+                        <li>
+                        	<a href="#">One more separated link</a>
+                        </li>
+                    </ul>
+                </li>
+            </ul>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block content %}
+    {% block page_content %}{% endblock %}
+{% endblock %}
+
+{% block scripts %}
+{{ super() }}
+
+{% endblock %}
