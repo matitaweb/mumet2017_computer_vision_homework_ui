@@ -13,6 +13,7 @@ import simplejson
 import traceback
 import base64
 import uuid
+import imutils
 
 
 from flask import Flask, request, render_template, redirect, url_for, send_file, send_from_directory, g, abort, flash, make_response
@@ -25,6 +26,7 @@ from lib.luminanceManager import luminanceManager
 from lib.mergeManager import mergeManager
 from lib.isometricsManager import isometricsManager
 from lib.noisefilterManager import noisefilterManager
+from lib.panoramaManager import panoramaManager
 
 #
 
@@ -551,7 +553,49 @@ def bilateralFilter():
     
     return simplejson.dumps({"imgPath": outputFilePath, "result":1, "msg":"OK"})        
     
+@app.route('/mosaik', methods=['GET', 'POST'])
+def mosaik():
+    file_display = getFileDisplay()
+    return render_template('mosaik.html', result =file_display)
 
+@app.route('/stitch', methods=['POST'])
+def stich():
+    selectedImg = request.form.getlist("delete")
+    selectedImgLen = len(selectedImg)
+    app.logger.info(selectedImg)
+    if(selectedImgLen <2):
+        return simplejson.dumps({"imgPath": "", "result":0, "msg":"Error, select at least 2 images..."})
+        
+    app.logger.info(selectedImg)
+    filenameFirst = selectedImg[0]
+    imgFirst = cv2.imread(os.path.join(app.config['UPLOAD_FOLDER'], filenameFirst),1) # grey scale
+    filenameSecond = selectedImg[1]
+    imgSecond = cv2.imread(os.path.join(app.config['UPLOAD_FOLDER'], filenameSecond),1) # grey scale
+    
+    """
+    rows01, cols01, channels= imgFirst.shape
+    rows02, cols02, channels = imgSecond.shape
+    if(rows01 != rows02):
+        return simplejson.dumps({"imgPath": "", "result":0, "msg":"Error, select at least 2 images with same height..."})
+
+    if(cols01 != cols02):
+        return simplejson.dumps({"imgPath": "", "result":0, "msg":"Error, select at least 2 images with same width..."})
+    """
+    
+    outputFileName = str(uuid.uuid4())+"_"+filenameFirst
+    outputFilePath = os.path.join(app.config['WORKING_FOLDER'], str(uuid.uuid4())+"_"+outputFileName)
+
+ 
+    imageA = imutils.resize(imgFirst, width=400)
+    imageB = imutils.resize(imgSecond, width=400)
+    
+    # stitch the images together to create a panorama
+    pm = panoramaManager()
+    (result, vis) = pm.stitch([imageA, imageB], showMatches=True)
+    cv2.imwrite(outputFilePath,result)
+    
+    return simplejson.dumps({"imgPath": outputFilePath, "result":1, "msg":"OK"})  
+    
 
 #START
 if __name__ == '__main__':
